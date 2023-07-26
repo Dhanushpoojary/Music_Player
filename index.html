@@ -1,0 +1,132 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title> MUSIC PLAYER</title>
+	<link rel="stylesheet" href="style.css">
+	<script src="https://kit.fontawesome.com/a7d507c677.js" crossorigin="anonymous"></script>
+</head>
+<body>
+	<div class="container">
+		<div class="music-player">
+			<nav>
+				<div class="circle">
+					<i class="fa-solid fa-angle-left"></i>
+				</div>
+				<div class="circle">
+					<i class="fa-solid fa-bars"></i>
+				</div>
+			</nav>
+			<div class="song-info">
+				<img id="song-img" class="song-img">
+				<h1 id="song-title"></h1>
+				<p id="singer"></p>
+			</div>
+
+			<audio id="song">
+				<source src="Gasolina.mp3" type="audio/mpeg">
+				<source src="Believer.mp3" type="audio/mpeg">
+				<source src="Bones.mp3" type="audio/mpeg"> 
+			</audio>
+
+			<input type="range" value="0" id="progress">
+
+			<div class="controls">
+				<div onclick="previousSong()"><i class="fa-solid fa-backward"></i></div>
+				<div onclick="playPause()"><i class="fa-solid fa-play" id="ctrlIcon"></i></div>
+				<div onclick="nextSong()"><i class="fa-solid fa-forward"></i></div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		let progress = document.getElementById("progress");
+		let song = document.getElementById("song");
+		let ctrlIcon = document.getElementById("ctrlIcon");
+		let songList = [{
+				src: "Gasolina.mp3",
+				img: "srch.webp",
+				title: "Gasolina",
+				singer: "singer"
+			},
+			{
+				src: "Believer.mp3",
+				img: "bl.jpg",
+				title: "Believer",
+				singer: "Singer"
+			},
+			{
+				src: "Bones.mp3",
+				img: "bone.jpg",
+				title: "Bones",
+				singer: "Singer"
+			},
+			];
+		let currentSongIndex = 0;
+		window.addEventListener("DOMContentLoaded", function() {
+	loadSong();
+});
+
+		song.onloadedmetadata = function() {
+			progress.max = song.duration;
+			progress.value = song.currentTime;
+		};
+
+		function playPause() {
+			if (ctrlIcon.classList.contains("fa-pause")) {
+				song.pause();
+				ctrlIcon.classList.remove("fa-pause");
+				ctrlIcon.classList.add("fa-play");
+			} else {
+				song.play();
+				ctrlIcon.classList.add("fa-pause");
+				ctrlIcon.classList.remove("fa-play");
+			}
+		}
+
+		if (song.play()) {
+			setInterval(() => {
+				progress.value = song.currentTime;
+			}, 500);
+		}
+
+		progress.onchange = function() {
+			song.play();
+			song.currentTime = progress.value;
+			ctrlIcon.classList.add("fa-pause");
+			ctrlIcon.classList.remove("fa-play");
+		};
+
+		function nextSong() {
+			currentSongIndex++;
+			if (currentSongIndex >= songList.length) {
+				currentSongIndex = 0; // Start from the first song if reached the end
+			}
+			loadSong();
+		}
+
+		function previousSong() {
+			currentSongIndex--;
+			if (currentSongIndex < 0) {
+				currentSongIndex = songList.length - 1; // Go to the last song if at the beginning
+			}
+			loadSong();
+		}
+
+		function loadSong() {
+  const currentSong = songList[currentSongIndex];
+  song.src = currentSong.src;
+  document.getElementById("song-img").src = currentSong.img;
+  document.getElementById("song-title").textContent = currentSong.title;
+  document.getElementById("singer").textContent = currentSong.singer;
+  song.load();
+  song.play(); 
+
+  // Play the song immediately after loading
+    ctrlIcon.classList.add("fa-pause");
+    ctrlIcon.classList.remove("fa-play");
+ 
+}
+	</script>
+</body>
+</html>
